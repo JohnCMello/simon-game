@@ -1,0 +1,255 @@
+html{
+  font-size: 62.5%;
+  background-color: darkslategray;
+}
+
+body{
+  font-family:verdana,sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root{
+  --game-size:56rem;
+}
+
+.container{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+margin-top: 4rem;
+width: max-content;
+margin: 4rem auto;
+border: 2rem solid #111;
+border-radius: 100%;
+padding: 0;
+}
+
+.board{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: var(--game-size);
+  height: var(--game-size);
+  background-color: #222;
+  border-radius: 50%;
+
+}
+
+.board__pad{
+  width: calc(var(--game-size)/ 2);
+  height: calc(var(--game-size)/ 2);
+  border: 4rem solid #222;  
+}
+
+.board__pad--tl{
+  background-color: green;
+  border-top-left-radius: 100%;
+}
+.board__pad--tr{
+  background-color: red;
+  border-top-right-radius: 100%;
+}
+.board__pad--bl{
+  background-color: yellow;
+  border-bottom-left-radius: 100%;
+}
+.board__pad--br{
+  background-color: blue;
+  border-bottom-right-radius: 100%;
+}
+
+.board__pad--active{
+  background-color: rgba(152, 250, 73, 0.801);
+}
+
+.board__controls{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #555;
+  width: calc(var(--game-size) / 2);
+  height: calc(var(--game-size) / 2);
+  border: 2rem solid rgb(24, 24, 24);
+  border-radius: 100%;
+  top: calc(var(--game-size) / 4);
+  left: calc(var(--game-size) / 4);
+  box-shadow: 0 0 2rem #000;
+}
+.game__title{
+  font-size: 3rem;
+  text-transform: uppercase;
+  margin-top: calc(var(--game-size)/13);
+  margin-bottom: 0;
+}
+
+.reg{
+  font-size: 1.6rem;
+  margin-left: -1rem;
+  vertical-align: top;
+}
+
+.gui{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-divider{
+  display: flex;
+  justify-content: space-evenly;
+  width:20rem;
+  height: 12rem;
+  margin-left: 1rem;
+  
+}
+
+.group{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: calc(100% / 3);
+  justify-content: end;
+  align-items: center;
+}
+
+.group-large{
+  display: flex;
+  width: 20rem;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: calc(var(--game-size)/30);;
+  margin: .4rem;
+}
+
+.gui__label{
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 10%;
+  border: .1rem solid #111;
+  border-radius: .3rem;
+  padding: .2rem;
+  box-shadow: 0 0 .3rem #222, inset 0 0 .3rem #222;
+}
+.gui__label--switch{
+  margin: 0;
+}
+.gui__counter{
+  background-color: rgb(27, 3, 3);
+  width: 75%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: .3rem solid #111;
+  border-radius: 10%;
+  box-shadow: 0 0 .6rem #111;
+}
+
+.counter__numbers{
+font-size:2rem;
+color: red;
+letter-spacing: .2rem;
+font-weight: bold;
+}
+
+.gui__btn{
+  width: 4rem;
+  height: 4rem;
+  border: .6rem solid #222;
+  border-radius: 100%;
+  box-shadow: 0 .2rem .4rem #111;
+  transition: transform .02s ;
+}
+
+.gui__btn:active{
+  transform: translate(0, .3rem);
+  box-shadow: none;
+}
+
+.gui__btn--start{
+background-color: darkred;
+}
+
+
+.gui__btn--strict{
+  background-color: darkgoldenrod;
+}
+
+.gui__led{
+  height:1.3rem;
+  width: 1.3rem;
+  background-color: rgb(27, 3, 3);
+  border: .3rem solid #222;
+  border-radius: 100%;
+  margin-bottom: .6rem;
+  box-shadow: 0 0 .3rem #111, inset 0 0 .2rem #222;
+}
+
+.strict-led--on{
+  background-color: darkred
+}
+
+.start-led--on{
+  background-color: green
+}
+
+.gui__btn-switch{
+  position: relative;
+  background-color: #111;
+  width: 3.6rem;
+  height: 2.04rem;
+  margin: .4rem;
+  border: .3rem solid #000;
+  border-radius: .3rem;
+  box-shadow: 0 0 .5rem #111, inset 0 0 .5rem #333;
+}
+
+.gui__label--switch-on{
+  background-color: rgba(210, 105, 30, 0.753);
+}
+
+.gui__btn-switch::before{
+  content: '';
+  position: absolute;
+  height: 1.2rem;
+  width: 1.3rem;
+  background-color: #333;
+  text-align: center;
+  border: .2rem solid #333;
+  border-radius: .3rem;
+  top: -.1rem;
+  left: 1.5rem;
+  transition: transform .3s ease-in-out;
+  box-shadow: 0 .2rem 0 #000, -.4rem .2rem 0 #000, .4rem .2rem 0 #000;
+}
+
+.btn__switch--active::before{
+  transform: translateX(-1.2rem);
+}
+
+.footer{
+  width: 20rem;
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+@media (max-width: 600px){
+  html{
+    font-size:45% ;
+}
+}

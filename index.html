@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAD/ZgAAJgD/AODTygAA//IADQUAABn/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQDAwMDAwMEBAAAAAAAAAQEAwMDAwMDBAQAAAAAAAAEBAMDAwMDAwQEAAAAAAAABAQDAwMDAwICAgIAAAAAAAQEAwMDAwICAgICAgAAAAAEBAMDAwICAgICAgICAAAABAQEBAQCAgICAgICAgQEBAQEBAQEBAQEBAQEBAQEBAQEBAUFBQQEBAQEBAQEAQEBBAQFBQUFBAQEBAQEAQEBAQQEBQUFBQUEBAQEAQEBAQEEBAUFBQUFBQQEAQEBAQEBBAQFBQUFBQUEBAEBAQEBAQQEBQUFBQUFBAQBAQEBAQEEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    rel="icon" type="image/x-icon" />
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"
+    integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Simon / Genius Game</title>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="board">
+      <div class="board__pad board__pad--tl" id="board__pad--tl"></div>
+      <div class="board__pad board__pad--tr" id="board__pad--tr"></div>
+      <div class="board__pad board__pad--bl" id="board__pad--bl"></div>
+      <div class="board__pad board__pad--br" id="board__pad--br"></div>
+      <div class="board__controls">
+        <h1 class="game__title">Genius <span class="reg">®</span></h1>
+        <div class="gui">
+          <div class="control-divider">
+            <div class="group">
+              <div class="gui__counter" id="counter__screen">
+                <p id="counter-numbers"></p>
+              </div>
+              <p class="gui__label">moves</p>
+            </div> <!-- Group -->
+            <div class="group">
+              <div class="gui__led" id="start-led"></div>
+              <div class="gui__btn gui__btn--start" id="start-btn"></div>
+              <p class="gui__label">start</p>
+            </div> <!-- Group -->
+            <div class="group">
+              <div class="gui__led" id="strict-led"></div>
+              <div class="gui__btn gui__btn--strict" id="strict-btn"></div>
+              <p class="gui__label">strict</p>
+            </div> <!-- Group -->
+          </div><!-- Control Divider -->
+          <div class="group group-large">
+            <p class="gui__label gui__label--switch" id="on-label">on</p>
+            <div class="gui__btn-switch" id="power-btn"></div>
+            <p class="gui__label gui__label--switch">off</p>
+          </div> <!-- Group -->
+        </div><!-- User Interface -->
+      </div><!-- Board Controls -->
+    </div> <!-- Board -->
+  </div> <!-- Container -->
+  <footer class="footer">John Mello - 2022</footer>
+  <script src="./scripts/script.js"></script>
+</body>
+
+</html>
