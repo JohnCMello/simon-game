@@ -1,235 +1,251 @@
 // Pads -----------------------------------------------------------------------
-const $topLeftPad = document.querySelector('#board__pad--tl');
-const $topRightPad = document.querySelector('#board__pad--tr');
-const $bottomLeftPad = document.querySelector('#board__pad--bl');
-const $bottomRightPad = document.querySelector('#board__pad--br');
 
-// Counter --------------------------------------------------------------------
-const $counter = document.querySelector('#counter__screen');
+const pads = document.querySelectorAll('.board__pad')
 
-// Buttons --------------------------------------------------------------------
-const $startButton = document.querySelector('#start');
-const $powerButton = document.querySelector('#power');
-const $strictButton = document.querySelector('#strict');
+// Visual  --------------------------------------------------------------------
 
-const $slider = document.querySelector('.slider')
+const userInterface = {
+  $counter: document.querySelector('#counter__screen'),
+  $counterNumbers: document.querySelector('#counter-numbers'),
+  $strictLed: document.querySelector('#strict-led'),
+  $startLed: document.querySelector('#start-led'),
+  $onLabel: document.querySelector('#on-label')
+}
+
+// Controls --------------------------------------------------------------------
+
+const controls = {
+  $startButton: document.querySelector('#start-btn'),
+  $powerButton: document.querySelector('#power-btn'),
+  $strictButton: document.querySelector('#strict-btn')
+}
 
 // Game Variables -------------------------------------------------------------
 
-let order = [];
-let playerOrder = [];
-let flash;
-let turn;
-let good;
-let compTurn;
-let intervalId;
-let strict = false;
-let noise = true;
-let on = false;
-let win
+const gameData = {
+  powerOn: false,
+  strictMode: false,
+  startGame: false,
+  moves: undefined,
+  gameSequence: [],
+  playerSequence: [],
+  playerTurn: false,
+  sounds: [],
+  timeout: undefined
+}
 
+const soundsUrls = [
+  'audios/simonSound1.mp3',
+  'audios/simonSound2.mp3',
+  'audios/simonSound3.mp3',
+  'audios/simonSound4.mp3'
+].forEach(soundPath => {
+  const audio = new Audio(soundPath)
+  gameData.sounds.push(audio)
+})
 //  Listeners -----------------------------------------------------------------
 
-$powerButton.addEventListener('click', (e) => {
-  if ($powerButton.checked) {
-    on = true;
-    $counter.innerHTML = '--';
-  } else {
-    on = false
-    $counter.innerHTML = ''
-    clearColor()
-    clearInterval(intervalId)
+// Controls 
+
+// -- Power --
+controls.$powerButton.addEventListener('click', (event) => {
+  gameData.powerOn = controls.$powerButton.classList.toggle('btn__switch--active');
+  userInterface.$onLabel.classList.toggle('gui__label--switch-on');
+  userInterface.$counterNumbers.classList.add('counter__numbers');
+  userInterface.$counterNumbers.innerHTML = '--';
+
+  if (!gameData.powerOn) {
+    userInterface.$counterNumbers.innerHTML = '';
+    userInterface.$startLed.classList.remove('start-led--on');
+    userInterface.$strictLed.classList.remove('strict-led--on');
   }
+
+  gameData.strictMode = false;
+  gameData.moves = 0;
+  gameData.playerTurn = false;
+  gameData.gameSequence = [];
+  gameData.playerSequence = [];
+
+  disablePads()
+  handleCursor('auto')
+
+})
+
+// -- Start --
+controls.$startButton.addEventListener('click', (event) => {
+  if (!gameData.powerOn) return;
+  if (gameData.startGame) {
+    gameData.strictMode = false;
+    gameData.moves = 0;
+    gameData.playerTurn = false;
+    gameData.gameSequence = [];
+    gameData.playerSequence = [];
+    gameData.startGame = userInterface.$startLed.classList.toggle('start-led--on');
+    userInterface.$counterNumbers.innerHTML = '--'
+    return
+  }
+  startGame();
+  gameData.startGame = userInterface.$startLed.classList.toggle('start-led--on');
+
+})
+
+// -- Strict --
+controls.$strictButton.addEventListener('click', (event) => {
+  if (!gameData.powerOn) return;
+  gameData.strictMode = userInterface.$strictLed.classList.toggle('strict-led--on');
+
+})
+
+// Pads
+
+pads.forEach((pad, index) => {
+  pad.addEventListener('click', padListener)
 });
 
-$strictButton.addEventListener('click', (e) => {
-  $strictButton.checked ? strict = true : strict = false
-});
-
-$startButton.addEventListener('click', (e) => {
-  if (on || win) {
-    play()
-  }
-});
-
-$topLeftPad.addEventListener('click', (e) => {
-  if (on) {
-    playerOrder.push(1)
-    check()
-    one()
-    if (!win) {
-      setTimeout(() => {
-        clearColor()
-      }, 300)
+function padListener(event) {
+  if (!gameData.playerTurn) return;
+  let soundId;
+  pads.forEach((pad, index) => {
+    if (pad === event.target) soundId = index;
+  })
+  event.target.classList.add('board__pad--active')
+  gameData.sounds[soundId].play()
+  gameData.playerSequence.push(soundId)
+  setTimeout(() => {
+    event.target.classList.remove('board__pad--active')
+    const currentMove = gameData.playerSequence.length - 1;
+    if (gameData.playerSequence[currentMove] !== gameData.gameSequence[currentMove]) {
+      gameData.playerTurn = false
+      disablePads()
+      handleStrictmode()
+    } else if (currentMove === gameData.gameSequence.length - 1) {
+      generateGameSequence()
+      startGameSequence()
     }
-  }
-})
+  }, 250)
+}
 
-$topRightPad.addEventListener('click', (e) => {
-  if (on) {
-    playerOrder.push(2)
-    check()
-    two()
-    if (!win) {
-      setTimeout(() => {
-        clearColor()
-      }, 300)
+function handleCursor(cursorType) {
+  pads.forEach(pad => {
+    pad.style.cursor = cursorType
+  })
+}
+
+//  ===========================================================================
+
+function startGame() {
+  flashMovesCounter('--', () => {
+    generateGameSequence();
+    startGameSequence();
+  })
+}
+
+function generateGameSequence() {
+  if (gameData.moves === 20) {
+    flashMovesCounter('**', startGame);
+    return
+  }
+  gameData.gameSequence.push(Math.floor(Math.random() * 4));
+  gameData.moves++;
+  setMoves();
+}
+
+function setMoves() {
+  const moves = gameData.moves.toString();
+  const displayMoves = '00'.substring(0, 2 - moves.length) + moves;
+  userInterface.$counterNumbers.innerHTML = displayMoves;
+}
+
+function startGameSequence() {
+  let counter = 0;
+  let padOn = true;
+  gameData.playerSequence = [];
+  gameData.playerTurn = false
+
+  handleCursor('auto')
+
+  const interval = setInterval(() => {
+    if (!gameData.powerOn) {
+      clearInterval(interval);
+      disablePads()
+      return
     }
-  }
-})
-
-$bottomRightPad.addEventListener('click', (e) => {
-  if (on) {
-    playerOrder.push(3)
-    check()
-    three()
-    if (!win) {
-      setTimeout(() => {
-        clearColor()
-      }, 300)
-    }
-  }
-})
-
-$bottomLeftPad.addEventListener('click', (e) => {
-  if (on) {
-    playerOrder.push(4)
-    check()
-    four()
-    if (!win) {
-      setTimeout(() => {
-        clearColor()
-      }, 300)
-    }
-  }
-})
-
-
-// Utils ----------------------------------------------------------------------
-
-function clearColor() {
-  $topLeftPad.style.opacity = .5
-  $topRightPad.style.opacity = .5
-  $bottomRightPad.style.opacity = .5
-  $bottomLeftPad.style.opacity = .5
-}
-
-function play() {
-  win = false;
-  order = [];
-  playerOrder = [];
-  flash = 0;
-  intervalId = 0;
-  turn = 1;
-  good = true
-  $counter.innerHTML = 1;
-
-  for (let i = 0; i < 20; i++) {
-    order.push(Math.floor(Math.random() * 4) + 1);
-  }
-
-  compTurn = true;
-  intervalId = setInterval(gameTurn, 800)
-}
-
-function gameTurn() {
-  on = false
-
-  if (flash === turn) {
-    clearInterval(intervalId);
-    compTurn = false;
-    clearColor();
-    on = true
-  }
-
-  if (compTurn) {
-    clearColor();
-    setTimeout(() => {
-      if (order[flash] === 1) one();
-      if (order[flash] === 2) two();
-      if (order[flash] === 3) three();
-      if (order[flash] === 4) four();
-      flash++
-    }, 200);
-  }
-}
-
-function one() {
-  if (noise) {
-    let audio = document.getElementById('audio1')
-    audio.play()
-  }
-  $topLeftPad.style.opacity = 1
-}
-function two() {
-  if (noise) {
-    let audio = document.getElementById('audio2')
-    audio.play()
-  }
-  $topRightPad.style.opacity = 1
-
-}
-function three() {
-  if (noise) {
-    let audio = document.getElementById('audio3')
-    audio.play()
-  }
-  $bottomRightPad.style.opacity = 1
-
-}
-function four() {
-  if (noise) {
-    let audio = document.getElementById('audio4')
-    audio.play()
-  }
-  $bottomLeftPad.style.opacity = 1
-}
-
-function check() {
-  if (playerOrder[playerOrder.length - 1] !== order[playerOrder.length - 1]) good = false;
-
-  if (playerOrder.length === 20 && good) winGame()
-
-  if (!good) {
-    flashColor()
-    $counter.innerHTML = 'NO'
-    setTimeout(() => {
-      $counter.innerHTML = turn;
-      clearColor();
-      if (strict) {
-        play()
-      } else {
-        compTurn = true;
-        flash = 0;
-        playerOrder = [];
-        good = true;
-        intervalId = setInterval(gameTurn, 800)
-
+    if (padOn) {
+      if (counter === gameData.gameSequence.length) {
+        clearInterval(interval);
+        disablePads();
+        waitForPlayerMove();
+        handleCursor('pointer')
+        gameData.playerTurn = true;
+        return;
       }
-    }, 800);
-    // noise = false
+      const soundId = gameData.gameSequence[counter];
+      const pad = pads[soundId]
+      gameData.sounds[soundId].play();
+      pad.classList.add('board__pad--active');
+      counter++
+    } else {
+      disablePads()
+    }
+    padOn = !padOn
+  }, 500)
+}
+
+function waitForPlayerMove() {
+  clearTimeout(gameData.timeout)
+  gameData.timeout = setTimeout(() => {
+    if (!gameData.playerTurn) return;
+    disablePads()
+    handleStrictmode()
+  }, 5000);
+}
+
+function handleStrictmode() {
+  gameData.playerTurn = false;
+  if (gameData.strictMode) {
+    flashMovesCounter('!!', () => {
+      gameData.moves = 0;
+      gameData.gameSequence = [];
+      startGame()
+    })
+  } else {
+    flashMovesCounter('!!', () => {
+      setMoves()
+      startGameSequence()
+    })
   }
-
-  if (turn === playerOrder.length && good && !win) {
-    turn++;
-    playerOrder = [];
-    compTurn = true;
-    flash = 0;
-    $counter.innerHTML = turn
-    intervalId = setInterval(gameTurn, 800)
-  }
 }
 
-function flashColor() {
-  $topLeftPad.style.opacity = 1;
-  $topRightPad.style.opacity = 1;
-  $bottomRightPad.style.opacity = 1;
-  $bottomLeftPad.style.opacity = 1;
+function disablePads() {
+  pads.forEach(pad => pad.classList.remove('board__pad--active'));
 }
 
-function winGame() {
-  flashColor();
-  $counter.innerHTML = 'WIN'
-  on = false
-  win = true
+function flashPad(pad) {
+  if (!gameData.powerOn) return;
+  pad.classList.add('board__pad--active');
+  setInterval(() => {
+    pad.classList.remove('board__pad--active');
+  }, 150)
 }
+
+function flashMovesCounter(text, callback) {
+  let counter = 0;
+  let on = true;
+  userInterface.$counterNumbers.innerHTML = text;
+  const interval = setInterval(() => {
+    if (!gameData.powerOn) return clearInterval(interval)
+    if (on) {
+      userInterface.$counterNumbers.classList.remove('counter__numbers');
+    } else {
+      userInterface.$counterNumbers.classList.add('counter__numbers');
+      if (++counter === 3) {
+        clearInterval(interval);
+        callback();
+      }
+    }
+    on = !on;
+  }, 250)
+}
+
+
+
